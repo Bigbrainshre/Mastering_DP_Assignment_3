@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int f(int i, int k, int canBuy, vector<int>& prices, vector<vector<vector<int>>>& dp) {
+        if (i == prices.size() || k == 0) return 0;
+
+        if (dp[i][k][canBuy] != -1) return dp[i][k][canBuy];
+
+        int profit = 0;
+        if (canBuy) {
+            
+            int buy = -prices[i] + f(i + 1, k, 0, prices, dp);
+            int skip = f(i + 1, k, 1, prices, dp);
+            profit = max(buy, skip);
+        } else {
+            
+            int sell = prices[i] + f(i + 1, k - 1, 1, prices, dp);
+            int skip = f(i + 1, k, 0, prices, dp);
+            profit = max(sell, skip);
+        }
+
+        return dp[i][k][canBuy] = profit;
+    }
+
+    int maxProfit(int k, vector<int>& prices) {
+        int n = prices.size();
+        vector<vector<vector<int>>> dp(n, vector<vector<int>>(k + 1, vector<int>(2, -1)));
+        return f(0, k, 1, prices, dp); 
+    }
+};
